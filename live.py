@@ -10,6 +10,12 @@ import datetime
 from mexc_python.mexcpy.api import MexcFuturesAPI as API
 from mexc_python.mexcpy.mexcTypes import CreateOrderRequest, OrderSide, OrderType, OpenType
 from dataclasses import asdict
+import ssl
+import certifi
+import aiohttp
+
+# Create SSL context for secure connections
+ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 # --- Config ---
 USER_TOKEN = "WEB029506898cc35436d28428665685e59061ae4b900a6f95e06ab25a0341f438f1"
@@ -234,7 +240,7 @@ async def run_bot():
     while True:
         try:
             log("[BOT] Connecting to Binance WebSocket...")
-            async with websockets.connect(BINANCE_WS_URL) as ws:
+            async with websockets.connect(BINANCE_WS_URL, ssl=ssl_context) as ws:
                 log("[BOT] Connected! Receiving 1s candles...")
                 async for msg in ws:
                     try:
